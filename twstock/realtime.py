@@ -24,7 +24,10 @@ def _format_stock_info(data) -> dict:
     }
 
     # Timestamp
-    result['timestamp'] = int(data['tlong']) / 1000
+    if 'tlong' in data:
+        result['timestamp'] = int(data['tlong']) / 1000
+    else:
+        result['timestamp'] = int(time.time())
 
     # Information
     result['info']['code'] = data['c']
@@ -32,7 +35,7 @@ def _format_stock_info(data) -> dict:
     result['info']['name'] = data['n']
     result['info']['fullname'] = data['nf']
     result['info']['time'] = datetime.datetime.fromtimestamp(
-        int(data['tlong']) / 1000).strftime('%Y-%m-%d %H:%M:%S')
+        result['timestamp']).strftime('%Y-%m-%d %H:%M:%S')
 
     # Process best result
     def _split_best(d):
