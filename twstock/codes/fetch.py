@@ -15,6 +15,9 @@ from lxml import etree
 
 from twstock.proxy import get_proxies
 
+import logging
+log = logging.getLogger(__name__)
+
 TWSE_EQUITIES_URL = 'https://isin.twse.com.tw/isin/C_public.jsp?strMode=2'
 TPEX_EQUITIES_URL = 'https://isin.twse.com.tw/isin/C_public.jsp?strMode=4'
 ROW = namedtuple('Row', ['type', 'code', 'name', 'ISIN', 'start',
@@ -28,6 +31,7 @@ def make_row_tuple(typ, row):
 
 def fetch_data(url):
     r = requests.get(url, proxies=get_proxies())
+    log.debug('HTTP response: %r' % r.content)
     root = etree.HTML(r.text)
     trs = root.xpath('//tr')[1:]
 

@@ -23,6 +23,8 @@ except ImportError as e:
     import analytics
     from codes import codes
 
+import logging
+log = logging.getLogger(__name__)
 
 TWSE_BASE_URL = 'https://www.twse.com.tw/'
 TPEX_BASE_URL = 'https://www.tpex.org.tw/'
@@ -57,6 +59,7 @@ class TWSEFetcher(BaseFetcher):
         for retry_i in range(retry):
             r = requests.get(self.REPORT_URL, params=params,
                              proxies=get_proxies())
+            log.debug('HTTP response: %r' % r.content)
             try:
                 data = r.json()
             except JSONDecodeError:
@@ -104,6 +107,7 @@ class TPEXFetcher(BaseFetcher):
         for retry_i in range(retry):
             r = requests.get(self.REPORT_URL, params=params,
                              proxies=get_proxies())
+            log.debug('HTTP response: %r' % r.content)
             try:
                 data = r.json()
             except JSONDecodeError:

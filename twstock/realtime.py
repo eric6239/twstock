@@ -6,8 +6,12 @@ import time
 import requests
 import twstock
 import sys
+import logging
 
 from twstock.proxy import get_proxies
+
+import logging
+log = logging.getLogger(__name__)
 
 SESSION_URL = 'https://mis.twse.com.tw/stock/index.jsp'
 STOCKINFO_URL = 'https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch={stock_id}&_={time}'
@@ -77,6 +81,7 @@ def get_raw(stocks) -> dict:
         STOCKINFO_URL.format(
             stock_id=_join_stock_id(stocks),
             time=int(time.time()) * 1000), verify=False)
+    log.debug('HTTP response: %r' % r.content)
 
     if sys.version_info < (3, 5):
         try:
