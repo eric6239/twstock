@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import time
 import datetime
 import urllib.parse
 from collections import namedtuple
@@ -28,7 +29,7 @@ log = logging.getLogger(__name__)
 
 TWSE_BASE_URL = 'https://www.twse.com.tw/'
 TPEX_BASE_URL = 'https://www.tpex.org.tw/'
-DATATUPLE = namedtuple('Data', ['date', 'capacity', 'turnover', 'open',
+Data = namedtuple('Data', ['date', 'capacity', 'turnover', 'open',
                                 'high', 'low', 'close', 'change', 'transaction'])
 
 
@@ -57,6 +58,7 @@ class TWSEFetcher(BaseFetcher):
     def fetch(self, year: int, month: int, sid: str, retry: int=5):
         params = {'date': '%d%02d01' % (year, month), 'stockNo': sid}
         for retry_i in range(retry):
+            time.sleep(3)
             r = requests.get(self.REPORT_URL, params=params,
                              proxies=get_proxies())
             log.debug('HTTP response: %r' % r.content)
@@ -89,7 +91,7 @@ class TWSEFetcher(BaseFetcher):
         data[7] = float(0.0 if data[7].replace(',', '') ==
                         'X0.00' else data[7].replace(',', ''))
         data[8] = int(data[8].replace(',', ''))
-        return DATATUPLE(*data)
+        return Data(*data)
 
     def purify(self, original_data):
         return [self._make_datatuple(d) for d in original_data['data']]
@@ -105,6 +107,7 @@ class TPEXFetcher(BaseFetcher):
     def fetch(self, year: int, month: int, sid: str, retry: int=5):
         params = {'d': '%d/%d' % (year - 1911, month), 'stkno': sid}
         for retry_i in range(retry):
+            time.sleep(3)
             r = requests.get(self.REPORT_URL, params=params,
                              proxies=get_proxies())
             log.debug('HTTP response: %r' % r.content)
@@ -138,7 +141,7 @@ class TPEXFetcher(BaseFetcher):
         data[6] = None if data[6] == '--' else float(data[6].replace(',', ''))
         data[7] = float(data[7].replace(',', ''))
         data[8] = int(data[8].replace(',', ''))
-        return DATATUPLE(*data)
+        return Data(*data)
 
     def purify(self, original_data):
         return [self._make_datatuple(d) for d in original_data['aaData']]

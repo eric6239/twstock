@@ -75,6 +75,7 @@ def _join_stock_id(stocks) -> str:
 
 def get_raw(stocks) -> dict:
     req = requests.Session()
+    time.sleep(3)
     req.get(SESSION_URL, proxies=get_proxies(), verify=False)
 
     r = req.get(

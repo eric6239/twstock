@@ -8,6 +8,7 @@
 
 import os
 import csv
+import time
 from collections import namedtuple
 
 import requests
@@ -30,6 +31,7 @@ def make_row_tuple(typ, row):
 
 
 def fetch_data(url):
+    time.sleep(3)
     r = requests.get(url, proxies=get_proxies())
     log.debug('HTTP response: %r' % r.content)
     root = etree.HTML(r.text)
