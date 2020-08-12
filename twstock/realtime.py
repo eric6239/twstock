@@ -13,7 +13,6 @@ from twstock.proxy import get_proxies
 import logging
 log = logging.getLogger(__name__)
 
-SESSION_URL = 'https://mis.twse.com.tw/stock/index.jsp'
 STOCKINFO_URL = 'https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch={stock_id}&_={time}'
 
 # Mock data
@@ -74,11 +73,8 @@ def _join_stock_id(stocks) -> str:
 
 
 def get_raw(stocks) -> dict:
-    req = requests.Session()
-    time.sleep(3)
-    req.get(SESSION_URL, proxies=get_proxies(), verify=False)
-
-    r = req.get(
+    time.sleep(5)
+    r = requests.get(
         STOCKINFO_URL.format(
             stock_id=_join_stock_id(stocks),
             time=int(time.time()) * 1000), verify=False)
@@ -103,7 +99,7 @@ def get(stocks, retry=3):
     # Set success
     data['success'] = False
 
-    # JSONdecode error, could be too fast, retry
+    # JSONdecode error
     if data['rtcode'] == '5000':
         # XXX: Stupit retry, you will dead here
         if retry:

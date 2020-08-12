@@ -31,7 +31,7 @@ def make_row_tuple(typ, row):
 
 
 def fetch_data(url):
-    time.sleep(3)
+    time.sleep(5)
     r = requests.get(url, proxies=get_proxies())
     log.debug('HTTP response: %r' % r.content)
     root = etree.HTML(r.text)
