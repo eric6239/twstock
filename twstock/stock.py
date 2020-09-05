@@ -158,7 +158,7 @@ class Stock(analytics.Analytics):
 
         # Init data
         if initial_fetch:
-            self.fetch_31()
+            self.fetch_61()
 
     def _month_year_iter(self, start_month, start_year, end_month, end_year):
         ym_start = 12 * start_year + start_month - 1
@@ -189,6 +189,14 @@ class Stock(analytics.Analytics):
         before = today - datetime.timedelta(days=60)
         self.fetch_from(before.year, before.month)
         self.data = self.data[-31:]
+        return self.data
+
+    def fetch_61(self):
+        """Fetch 61 days data"""
+        today = datetime.datetime.today()
+        before = today - datetime.timedelta(days=90)
+        self.fetch_from(before.year, before.month)
+        self.data = self.data[-61:]
         return self.data
 
     @property
